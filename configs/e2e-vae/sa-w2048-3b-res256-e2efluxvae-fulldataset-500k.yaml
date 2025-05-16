@@ -1,0 +1,99 @@
+trainer:
+  cache_dir: ""
+  checkpoint_dir: "output/sa-w2048-3b-res256-e2efluxvae-fulldataset-500k"
+  checkpointing_steps: 50000
+  consolidation_steps: 999999999999
+  enable_gradient_checkpointing: false
+  gradient_accumulation_steps: 1
+  gradient_clipping: 1.0
+  hard_skip_resume: false
+  logging_steps: 100
+  sampling_steps: 50000
+  logit_mean: 0.0
+  logit_std: 1.0
+  max_steps: 500000
+  mixed_precision: "bf16"
+  mode_scale: 1.29
+  precondition_outputs: false
+  project: "FuseDiT"
+  resume_from: "latest"
+  run: "sa-w2048-3b-res256-e2efluxvae-fulldataset-500k"
+  seed: 42
+  validation_steps: null
+  weighting_scheme: "logit_normal"
+model:
+  attention: "self"
+  base: "google/gemma-2b"
+  dit_num_hidden_layers: 30
+  encoder_type: "llm"
+  name: "DiT"
+  in_channels: 16
+  out_channels: 16
+  sample_size: 32
+  patch_size: 2
+  pos_embed: "ape"
+  qk_norm: true
+  sandwich_norm: false
+  text_hidden_states_index: -1
+  timestep_conditioning: "adaln-zero"
+  text_hidden_size: 2048
+  base_config_override:
+    hidden_activation: "gelu_pytorch_tanh"
+    head_dim: 128
+    hidden_size: 2048
+    intermediate_size: 8192
+    num_attention_heads: 16
+    num_key_value_heads: 4
+ema:
+  decay: 0.9999
+  update_steps: 1
+vae:
+  pretrained_model_name_or_path: "REPA-E/e2e-flux-vae"
+noise_scheduler:
+  pretrained_model_name_or_path: "stabilityai/stable-diffusion-3-medium-diffusers"
+  subfolder: "scheduler"
+optimizer:
+  lr: 1e-4
+  weight_decay: 1e-4
+lr_scheduler:
+  name: "constant"
+  num_warmup_steps: 0
+data:
+  apply_chat_template: false
+  batch_size: 32
+  caption_column: 
+    original: ""
+    synthetic: "txt"
+  center_crop: true
+  dataloader_num_workers: 32
+  data_path:
+    - "/PATH/TO/DATASET/BLIP3o-Pretrain-Long-Caption/sa_{000000..000999}.tar"
+    - "/PATH/TO/DATASET/BLIP3o-Pretrain-Long-Caption/webdataset_JDB_{1..99}.tar"
+    - "/PATH/TO/DATASET/BLIP3o-Pretrain-Long-Caption/webdataset_shard_{000..999}.tar"
+    - "/PATH/TO/DATASET/BLIP3o-Pretrain-Long-Caption/webdataset_shard_{1000..1597}.tar"
+    - "/PATH/TO/DATASET/BLIP3o-Pretrain-Short-Caption/{00000..01832}.tar"
+  device_prefetch_size: 64
+  image_column: "jpg"
+  instruction: ""
+  loader_prefetch_size: 64
+  max_prompt_length: 256
+  original_caption_rate: 0.0
+  random_dropping_rate: 0.1
+  resolution: 256
+  tokenizer: "google/gemma-2b"
+gen:
+  model_type: "baseline-dit"
+  val_prompt:
+    - "Enjoy a sweet scoop of strawberry ice cream with rainbow sprinkles while surrounded by the whimsical and colorful atmosphere of an amusement park."
+    - "A colorful rendition of the Paris cityscape in fauvism style."
+    - "A pink plain background of a lion"
+    - "A wine glass filled with red wine sitting on a chess board"
+    - "A photo of a golden retriever"
+  H: 256
+  W: 256
+  n_samples: 1
+  scale: 6
+  steps: 25
+  negative_prompt: null
+  instruction: ""
+  seed: 114514
